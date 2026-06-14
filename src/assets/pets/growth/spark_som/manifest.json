@@ -1,0 +1,75 @@
+{
+  "assetKey": "spark_som",
+  "displayName": "불씨솜",
+  "baseSize": {
+    "width": 256,
+    "height": 256
+  },
+  "displayScale": 1,
+  "states": {
+    "idle": {
+      "image": "idle.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 8,
+      "fps": 10,
+      "loop": true
+    },
+    "happy": {
+      "image": "happy.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 6,
+      "fps": 12,
+      "loop": false
+    },
+    "talk": {
+      "image": "talk.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 6,
+      "fps": 10,
+      "loop": true
+    },
+    "eat": {
+      "image": "eat.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 6,
+      "fps": 10,
+      "loop": true
+    },
+    "sleep": {
+      "image": "sleep.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 4,
+      "fps": 6,
+      "loop": true
+    },
+    "evolve": {
+      "image": "evolve.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 6,
+      "fps": 10,
+      "loop": false
+    },
+    "egg_idle": {
+      "image": "egg_idle.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 8,
+      "fps": 10,
+      "loop": true
+    },
+    "egg_hatch": {
+      "image": "egg_hatch.png",
+      "frameWidth": 256,
+      "frameHeight": 256,
+      "frameCount": 12,
+      "fps": 10,
+      "loop": false
+    }
+  }
+}

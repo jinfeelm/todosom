@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "TodoSom",
+    "slug": "todosom",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "todosom",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F4EF"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.todosom.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F4EF"
+      },
+      "package": "com.todosom.app"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-sqlite"]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "assetKey": "default_room",
+  "displayName": "기본 방",
+  "layers": [
+    "background"
+  ],
+  "periods": [
+    "morning",
+    "afternoon",
+    "night"
+  ]
+}

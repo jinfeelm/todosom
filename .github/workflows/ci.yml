@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck · Test · Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Validate assets
+        run: npm run validate:assets
+
+  notify-slack:
+    name: Slack 알림
+    needs: check
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post CI result to Slack
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "TodoSom CI — ${{ needs.check.result == 'success' && '✅ 성공' || '❌ 실패' }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "TodoSom CI — ${{ needs.check.result == 'success' && '성공' || '실패' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*이벤트*\n${{ github.event_name }}" },
+                    { "type": "mrkdwn", "text": "*브랜치*\n${{ github.ref_name }}" },
+                    { "type": "mrkdwn", "text": "*작성자*\n${{ github.actor }}" },
+                    { "type": "mrkdwn", "text": "*커밋*\n<${{ github.event.head_commit.url || github.event.pull_request.html_url }}|${{ github.event.head_commit.message || github.event.pull_request.title }}>" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "Actions 로그 보기" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
