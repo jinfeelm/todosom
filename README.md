@@ -72,8 +72,7 @@ npm run validate:assets
 - **Slack 알림**: CI 결과 → `#todosom-전체` (설정: `docs/setup-github-slack.md`)
 
 ```powershell
-gh auth login
-git clone https://github.com/<계정>/todosom.git
+git clone https://github.com/jinfeelm/todosom.git
 cd todosom
 npm ci
 npm test

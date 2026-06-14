@@ -2,21 +2,13 @@
 
 로컬 `node_modules` 없이 GitHub에서 코드를 보관하고, push/CI 결과를 Slack `#todosom-전체`에 받는 방법입니다.
 
-## 1. GitHub에 코드 올리기 (최초 1회)
+레포: https://github.com/jinfeelm/todosom
 
-PowerShell에서 프로젝트 폴더로 이동한 뒤:
+## 1. GitHub에 코드 올리기 (완료)
 
 ```powershell
 cd C:\Users\rkdud\OneDrive\Desktop\todosom
-gh auth login
-gh repo create todosom --private --source=. --remote=origin --push
-```
-
-이미 레포가 있으면:
-
-```powershell
-gh auth login
-git remote add origin https://github.com/<계정>/todosom.git
+git remote add origin https://github.com/jinfeelm/todosom.git
 git push -u origin main
 ```
 
@@ -26,7 +18,7 @@ GitHub에 push한 뒤 로컬에서 `node_modules`만 지워도 됩니다 (`.giti
 
 ```powershell
 Remove-Item -Recurse -Force node_modules
-git clone https://github.com/<계정>/todosom.git
+git clone https://github.com/jinfeelm/todosom.git
 cd todosom
 npm ci
 ```
@@ -35,19 +27,24 @@ npm ci
 
 ## 3. Slack CI 알림 (최초 1회)
 
-1. Slack 앱 관리 → **Incoming Webhooks** 활성화
+1. https://todosom.slack.com/apps/A0F7XDUAZ-incoming-webhooks 에서 **Incoming Webhooks** 추가
 2. `#todosom-전체` 채널용 Webhook URL 생성
-3. GitHub 레포 → **Settings → Secrets and variables → Actions**
-4. `SLACK_WEBHOOK_URL` 시크릿 추가 (Webhook URL 값)
+3. 아래 스크립트로 GitHub Secret 등록:
+
+```powershell
+.\scripts\setup-slack-webhook.ps1
+```
+
+또는 GitHub 레포 → **Settings → Secrets and variables → Actions** → `SLACK_WEBHOOK_URL` 수동 추가
 
 이후 `main`에 push하거나 PR을 열면 CI(typecheck, test, asset 검증) 결과가 Slack에 정리되어 옵니다.
 
 ## 4. GitHub ↔ Slack 구독 (선택)
 
-Slack에서 GitHub 앱을 설치한 뒤:
+Slack `#todosom-전체`에서 GitHub 앱 설치 후:
 
 ```
-/github subscribe <계정>/todosom commits pulls issues
+/github subscribe jinfeelm/todosom commits pulls issues workflows
 ```
 
-push·PR·이슈 알림을 채널에 추가로 받을 수 있습니다.
+push·PR·이슈·워크플로우 알림을 채널에 추가로 받을 수 있습니다.

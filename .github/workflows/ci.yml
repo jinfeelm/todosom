@@ -44,6 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Post CI result to Slack
+        continue-on-error: true
         uses: slackapi/slack-github-action@v2.0.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
