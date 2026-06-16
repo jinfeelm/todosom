@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "validate:assets": "tsx scripts/validate-manifests.ts",
-    "generate:assets": "tsx scripts/generate-assets.ts"
+    "generate:assets": "tsx scripts/generate-assets.ts",
+    "setup:mac": "bash scripts/setup-macos.sh"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans-kr": "^0.4.3",
