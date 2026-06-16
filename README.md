@@ -63,15 +63,29 @@ npm test
 npm run validate:assets
 ```
 
+## MacBook (M1) + iPhone에서 시작하기
+
+Xcode 없이 **Expo Go**만으로 실기기 테스트가 가능합니다.
+
+```bash
+git clone https://github.com/jinfeelm/todosom.git
+cd todosom
+bash scripts/setup-macos.sh   # Homebrew · Node · npm ci · 테스트 자동
+npm start                     # QR → iPhone Expo Go
+```
+
+자세한 가이드: [`docs/setup-macos-iphone.md`](docs/setup-macos-iphone.md)
+
 ## GitHub에서 작업하기
 
 코드는 GitHub `todosom` 레포에 보관합니다. `node_modules`는 Git에 포함되지 않으므로 clone 후 `npm ci`만 실행하면 됩니다.
 
+- **Mac + iPhone**: 위 세팅 가이드 참고
 - **클라우드 IDE**: GitHub Codespaces (`.devcontainer` 포함)
 - **CI**: push/PR 시 typecheck · test · asset 검증 (`.github/workflows/ci.yml`)
 - **Slack 알림**: CI 결과 → `#todosom-전체` (설정: `docs/setup-github-slack.md`)
 
-```powershell
+```bash
 git clone https://github.com/jinfeelm/todosom.git
 cd todosom
 npm ci
