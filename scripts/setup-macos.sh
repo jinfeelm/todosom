@@ -11,6 +11,14 @@ ok()    { printf '\033[32m✓ %s\033[0m\n' "$*"; }
 warn()  { printf '\033[33m! %s\033[0m\n' "$*"; }
 fail()  { printf '\033[31m✗ %s\033[0m\n' "$*" >&2; exit 1; }
 
+# 셸 프로필(~/.zprofile)에 PATH 한 줄 추가 (중복 방지)
+ensure_profile_line() {
+  local line="$1"
+  local profile="${HOME}/.zprofile"
+  touch "$profile"
+  grep -Fq "$line" "$profile" 2>/dev/null || echo "$line" >> "$profile"
+}
+
 info "TodoSom Mac 개발 환경 세팅을 시작합니다."
 
 # ── 1. Xcode Command Line Tools (git, 컴파일러) ─────────────────────────────
@@ -29,8 +37,10 @@ if ! command -v brew >/dev/null 2>&1; then
   # Apple Silicon 기본 경로
   if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-    grep -q 'homebrew/bin/brew shellenv' ~/.zprofile 2>/dev/null \
-      || echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+    ensure_profile_line 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+    ensure_profile_line 'eval "$(/usr/local/bin/brew shellenv)"'
   fi
 fi
 eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null || true)"
@@ -38,12 +48,21 @@ command -v brew >/dev/null 2>&1 || fail "Homebrew 설치 후 터미널을 다시
 ok "Homebrew $(brew --version | head -1)"
 
 # ── 3. Node.js 22 + watchman ──────────────────────────────────────────────────
-if ! command -v node >/dev/null 2>&1 || [[ "$(node -v | sed 's/v//' | cut -d. -f1)" -lt 20 ]]; then
+NODE_PREFIX="$(brew --prefix node@22 2>/dev/null || true)"
+if [[ -z "$NODE_PREFIX" ]] || [[ ! -d "$NODE_PREFIX/bin" ]]; then
   info "Node.js 22 설치 중…"
   brew install node@22
-  brew link node@22 --force --overwrite 2>/dev/null || true
+  NODE_PREFIX="$(brew --prefix node@22)"
 fi
-ok "Node $(node -v)"
+
+# node@22는 keg-only → zsh 새 터미널에서도 npm/node가 보이도록 PATH 영구 등록
+ensure_profile_line "export PATH=\"${NODE_PREFIX}/bin:\$PATH\""
+export PATH="${NODE_PREFIX}/bin:$PATH"
+
+if ! command -v node >/dev/null 2>&1; then
+  fail "Node.js PATH 등록 실패. 터미널을 새로 연 뒤: source ~/.zprofile"
+fi
+ok "Node $(node -v) · npm $(npm -v)"
 
 if ! command -v watchman >/dev/null 2>&1; then
   info "watchman 설치 중… (Metro 번들러 성능 향상)"
@@ -74,12 +93,13 @@ echo "  다음 단계 (아이폰 실기기 테스트):"
 echo ""
 echo "  1. App Store에서 'Expo Go' 설치"
 echo "  2. Mac과 iPhone을 같은 Wi‑Fi에 연결"
-echo "  3. 아래 명령으로 개발 서버 시작:"
+echo "  3. npm을 못 찾으면: source ~/.zprofile"
+echo "  4. 개발 서버 시작:"
 echo ""
 echo "       cd \"$ROOT\""
 echo "       npm start"
 echo ""
-echo "  4. 터미널 QR 코드를 iPhone 카메라로 스캔 → Expo Go에서 열기"
+echo "  5. 터미널 QR 코드를 iPhone 카메라로 스캔 → Expo Go에서 열기"
 echo ""
 echo "  자세한 가이드: docs/setup-macos-iphone.md"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

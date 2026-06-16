@@ -118,11 +118,36 @@ npx expo install --fix
 npm start
 ```
 
+### `zsh: command not found: npm` (가장 흔함)
+
+Homebrew `node@22`는 PATH에 자동으로 안 잡히는 경우가 있습니다. 아래 **한 줄** 실행 후 다시 시도:
+
+```bash
+source ~/.zprofile
+npm -v
+```
+
+`npm` 버전이 나오면:
+
+```bash
+cd ~/todosom
+npm start
+```
+
+여전히 안 되면 PATH를 직접 등록:
+
+```bash
+echo 'export PATH="/opt/homebrew/opt/node@22/bin:$PATH"' >> ~/.zprofile
+source ~/.zprofile
+npm -v
+```
+
 ### `npm ci` 실패
 
 ```bash
 node -v    # v20 이상이어야 함
 bash scripts/setup-macos.sh   # Node 재설치 포함
+source ~/.zprofile
 ```
 
 ### Mac에서 웹으로만 먼저 보고 싶을 때
